@@ -12,6 +12,9 @@ download:
 eval:
 	. .venv/bin/activate && python -m scripts.run_eval
 
+feedback:
+	. .venv/bin/activate && opie feedback-eval --rounds 5 --db
+
 demo:
 	. .venv/bin/activate && python -m scripts.demo_one --code $(CODE)
 

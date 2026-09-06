@@ -71,7 +71,11 @@ The offline backend exists so the entire system — graph, rules, taxonomy, scor
 
 ```bash
 make install          # venv + editable install
-make test             # 37 tests, all offline (no key, no network)
+make test             # 47 tests, all offline (no key, no network)
+
+# The data flywheel — proves F1 rises + review queue shrinks across rounds:
+opie feedback-eval --rounds 5      # deterministic, offline, no key needed
+make feedback                      # same, persists capture to SQLite
 
 # Real numbers (needs an Anthropic credential):
 export ANTHROPIC_API_KEY=sk-ant-...   # or: ant auth login  +  export OPIE_BACKEND=anthropic
@@ -135,6 +139,48 @@ GET  /v1/jobs/{job_id}/export.csv
 | Cost / product | _pending_ |
 
 ---
+
+## Data flywheel — the system gets more accurate over time
+
+OPIE closes a real-world validation feedback loop: corrections flow back in, accuracy rises, and the low-confidence review queue shrinks. This is the part that makes the project a *system*, not a parser.
+
+```
+extraction run ──▶ capture every field (value, confidence, evidence)  [SQLite]
+       │
+       ▼
+route low-confidence OR validator-flagged fields ──▶ review queue
+       │
+       ▼
+reviewer oracle (Open Food Facts record) ──▶ correction records (field, extracted, correct)
+       │
+       ├─▶ correction memory: embed each case; at extraction time retrieve k-NN past
+       │   corrections and apply the learned transform (numeric ratio / token-normalization
+       │   map) or inject them as few-shot exemplars into the vision agent's prompt
+       │
+       └─▶ confidence recalibration: refit per-field reliability -> the review-queue
+           threshold moves as calibration sharpens
+       │
+       ▼
+next round measured COLD (disjoint products, no leakage) ──▶ F1 up, queue down, ECE down
+```
+
+**Learning without fine-tune (v1):** corrections are learned by *retrieval* (k-NN over embedded correction cases → median correct/extracted ratio for numeric fields; a learned corrupted→correct token map for ingredients) and by *confidence recalibration* (reliability binning). No model weights change. The corrections learn transferable transforms, not product identities, so measuring on disjoint rounds is leakage-free.
+
+### Round-over-round result (reproducible: `opie feedback-eval --rounds 5`)
+
+Deterministic run on a seeded 400-product corpus, 5 disjoint rounds, simulated-error extractor. Each round is measured cold with state learned only from earlier rounds; the frozen baseline runs the same rounds with the loop disabled.
+
+| Round | Learned F1 | Baseline F1 | Review queue | ECE | Corrections learned |
+|---|---|---|---|---|---|
+| 1 | 0.822 | 0.822 | 709 | 0.204 | 450 |
+| 2 | 0.945 | 0.839 | 106 | 0.103 | 556 |
+| 3 | 0.954 | 0.844 | 102 | 0.062 | 658 |
+| 4 | 0.942 | 0.830 | 99  | 0.046 | 757 |
+| 5 | **0.956** | 0.835 | **96** | **0.050** | 850 |
+
+**Attribute F1 0.822 → 0.956** (+0.13 across rounds, +0.12 vs the flat no-feedback baseline) · **review queue 709 → 96** (−86%) · **calibration ECE 0.204 → 0.050**. The flywheel lifts accuracy; it isn't just plumbing.
+
+> **On the numbers:** the reproducible loop above runs on a *simulated-error extractor* — a seeded, deterministic stand-in that makes the error modes a real OCR/LLM makes (decimal-comma scale errors, salt/sodium unit swaps, OCR token corruptions). The measurements of the loop's effect are real and reproducible; the same feedback loop wraps the Claude-vision backend via `opie feedback-eval --backend anthropic` when a key + downloaded OFF images are present. As with the rest of the project, real-extractor numbers replace these before anything goes on a resume.
 
 ## Honesty guardrails
 

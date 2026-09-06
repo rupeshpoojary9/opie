@@ -25,6 +25,7 @@ dev = [
 ]
 
 [project.scripts]
+opie = "opie.cli:main"
 opie-download = "scripts.download_off_subset:main"
 opie-eval = "scripts.run_eval:main"
 opie-demo = "scripts.demo_one:main"

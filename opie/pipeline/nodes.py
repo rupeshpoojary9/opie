@@ -78,6 +78,10 @@ class Nodes:
             score.personalized.append(personalize(panel, profile))
         product.score = score
 
+        # [claim truth & deception] adjudicate each claim against its regulatory definition
+        from opie.deception.adjudicator import adjudicate_product
+        adjudicate_product(product)
+
         try:
             product.cost_usd = self.extractor.cost_usd()
         except Exception:

@@ -71,7 +71,10 @@ The offline backend exists so the entire system — graph, rules, taxonomy, scor
 
 ```bash
 make install          # venv + editable install
-make test             # 47 tests, all offline (no key, no network)
+make test             # 63 tests, all offline (no key, no network)
+
+# Truth & deception — catch misleading front-of-pack claims:
+opie deception-eval                # confusion matrix + MISLEADING recall + worked examples
 
 # The data flywheel — proves F1 rises + review queue shrinks across rounds:
 opie feedback-eval --rounds 5      # deterministic, offline, no key needed
@@ -139,6 +142,51 @@ GET  /v1/jobs/{job_id}/export.csv
 | Cost / product | _pending_ |
 
 ---
+
+## Truth & deception layer — catch misleading claims
+
+The headline feature. For every front-of-pack marketing claim, OPIE decides whether the product's actual nutrition and ingredients **support** it, and flags deceptive claims with an explainable, evidence-backed verdict grounded in **public regulatory definitions** — every threshold is cited in code.
+
+```
+claim text ──▶ normalize to a typed claim id (sugar_free, high_protein, gluten_free, ...)
+                     │
+                     ▼
+        regulatory definition (EU 1924/2006 · Codex CAC/GL 23-1997 · FSSAI 2020 · ...)
+                     │  cross-reference against extracted nutrition + ingredients
+                     ▼
+        verdict  SUPPORTED | MISLEADING | UNVERIFIABLE
+                 + basis (which rule + citation), offending_fact, evidence, severity
+                     │
+                     ▼
+        health-halo check: a technically-true claim on a grade D/E or very-high-sugar product
+```
+
+Every verdict cites the rule and the fact that triggered it. Example (a chocolate bar, base grade E):
+
+| Claim | Verdict | Why |
+|---|---|---|
+| `sugar free` | **MISLEADING** (high) | sugars 52g exceeds the 0.5g/100g `sugar_free` limit |
+| `high in protein` | **MISLEADING** (high) | protein supplies only 5% of energy (need ≥20%) |
+| `gluten free` | SUPPORTED · **HEALTH-HALO** | true, but distracts from a grade-E profile |
+| `organic` | UNVERIFIABLE | requires certification, not derivable from facts |
+
+Some claims are honestly **UNVERIFIABLE** from extracted facts (`organic`, `fortified`, `source_of_vitamins`) rather than guessed — the detector says so.
+
+### Deception eval (reproducible: `opie deception-eval`)
+
+Labeled set built from the corpus: a fixed claim roster is attached to every product, producing honest cases **and** adversarial cases (a claim attached to a product whose facts violate its definition). Ground truth = the public definition adjudicated on the product's **true** facts; predictions run on **extracted** facts, so the recall gap from 1.0 is the extraction-induced miss rate.
+
+Confusion matrix on a 400-product corpus (5,200 claim cases), rows = ground truth:
+
+| GT \ Pred | SUPPORTED | MISLEADING | UNVERIFIABLE |
+|---|---|---|---|
+| **SUPPORTED** | 1654 | 8 | 0 |
+| **MISLEADING** | 226 | 3312 | 0 |
+| **UNVERIFIABLE** | 0 | 0 | 800 |
+
+**MISLEADING recall (deception catch-rate): 0.936** on extracted facts (precision 0.998, F1 0.966) · **1.000 on oracle facts** (the rule set is self-consistent, so the 6.4% gap is entirely extraction noise — exactly what the flywheel below reduces). Macro-F1 0.967.
+
+> Optimized for **recall on MISLEADING** — how many deceptive labels we catch — because a missed deceptive claim is the costly error.
 
 ## Data flywheel — the system gets more accurate over time
 

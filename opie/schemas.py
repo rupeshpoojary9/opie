@@ -109,6 +109,30 @@ class Score(BaseModel):
     personalized: list[PersonalizedScore] = Field(default_factory=list)
 
 
+# --- Claim truth & deception ----------------------------------------------
+
+class ClaimStatus(str, Enum):
+    supported = "SUPPORTED"        # the product's facts satisfy the claim's regulatory definition
+    misleading = "MISLEADING"      # the facts violate the definition — a deceptive claim
+    unverifiable = "UNVERIFIABLE"  # the claim can't be checked from the extracted facts
+
+
+class ClaimVerdict(BaseModel):
+    """An explainable, evidence-backed truth verdict for one front-of-pack claim."""
+    claim_text: str = Field(description="The claim as printed, e.g. 'SUGAR FREE'.")
+    claim_id: Optional[str] = Field(default=None, description="Normalized claim id, e.g. 'sugar_free'.")
+    status: ClaimStatus
+    basis: str = Field(description="Which regulatory rule + citation the verdict rests on.")
+    offending_fact: Optional[str] = Field(default=None, description="The specific fact that triggered a MISLEADING verdict.")
+    reasons: list[str] = Field(default_factory=list, description="Human-readable explanation trail.")
+    evidence: list[Evidence] = Field(default_factory=list)
+    severity: Severity = Severity.low
+    health_halo: bool = Field(
+        default=False,
+        description="A technically-true claim that distracts from a poor overall profile (grade D/E or very high sugar).",
+    )
+
+
 # --- Top-level record ------------------------------------------------------
 
 class ProductIntelligence(BaseModel):
@@ -121,5 +145,6 @@ class ProductIntelligence(BaseModel):
     claims: list[Claim] = Field(default_factory=list)
     validation: ValidationResult = Field(default_factory=ValidationResult)
     score: Score = Field(default_factory=Score)
+    claim_verdicts: list[ClaimVerdict] = Field(default_factory=list)
     latency_ms: Optional[float] = None
     cost_usd: Optional[float] = None

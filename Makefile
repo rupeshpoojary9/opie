@@ -1,4 +1,4 @@
-.PHONY: install test download eval demo serve clean
+.PHONY: install test download eval feedback deception demo serve clean
 
 install:
 	python3 -m venv .venv && . .venv/bin/activate && pip install -U pip && pip install -e ".[dev]"
@@ -14,6 +14,9 @@ eval:
 
 feedback:
 	. .venv/bin/activate && opie feedback-eval --rounds 5 --db
+
+deception:
+	. .venv/bin/activate && opie deception-eval
 
 demo:
 	. .venv/bin/activate && python -m scripts.demo_one --code $(CODE)

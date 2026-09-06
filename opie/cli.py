@@ -52,6 +52,26 @@ def _cmd_feedback_eval(args: argparse.Namespace) -> int:
     return 0 if report.passed() else 2
 
 
+def _cmd_deception_eval(args: argparse.Namespace) -> int:
+    from opie.config import RESULTS_DIR
+    from opie.deception.eval import run_deception_eval
+    from opie.feedback.corpus import load_corpus
+
+    products = load_corpus(n=args.products, seed=args.seed)
+    is_real = getattr(products[0], "off", None) is not None
+    print(f"Corpus: {len(products)} products "
+          f"({'real OFF subset' if is_real else 'deterministic synthetic'}) | "
+          f"facts: {args.mode} | seed: {args.seed}")
+    report = run_deception_eval(products, mode=args.mode)
+    md = report.to_markdown()
+    print("\n" + md)
+    out_dir = Path(args.out or (RESULTS_DIR / "deception"))
+    report.to_json(out_dir / "deception_eval.json")
+    (out_dir / "DECEPTION.md").write_text(md)
+    print(f"\nWrote {out_dir / 'deception_eval.json'} and {out_dir / 'DECEPTION.md'}")
+    return 0 if report.passed() else 2
+
+
 def _cmd_eval(args: argparse.Namespace) -> int:
     from scripts.run_eval import main as run_eval_main
     sys.argv = ["opie-eval"]
@@ -90,6 +110,13 @@ def build_parser() -> argparse.ArgumentParser:
     fe.add_argument("--out", default=None)
     fe.add_argument("--db", action="store_true", help="Persist runs/observations/corrections to SQLite.")
     fe.set_defaults(func=_cmd_feedback_eval)
+
+    de = sub.add_parser("deception-eval", help="Run the claim truth & deception detector over a labeled set.")
+    de.add_argument("--products", type=int, default=400)
+    de.add_argument("--seed", type=int, default=13)
+    de.add_argument("--mode", default="extracted", choices=["extracted", "oracle"])
+    de.add_argument("--out", default=None)
+    de.set_defaults(func=_cmd_deception_eval)
 
     ev = sub.add_parser("eval", help="Attribute eval over the OFF subset.")
     ev.set_defaults(func=_cmd_eval)

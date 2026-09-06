@@ -1,0 +1,41 @@
+[project]
+name = "opie"
+version = "0.1.0"
+description = "Open Product-Intelligence Engine: image -> validated, personalized food-product intelligence"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "pydantic>=2.6",
+    "anthropic>=0.40",
+    "langgraph>=0.2.0",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "python-multipart>=0.0.9",
+    "pillow>=10.0",
+    "pytesseract>=0.3.10",
+    "requests>=2.31",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+]
+
+[project.scripts]
+opie-download = "scripts.download_off_subset:main"
+opie-eval = "scripts.run_eval:main"
+opie-demo = "scripts.demo_one:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["opie*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

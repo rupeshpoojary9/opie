@@ -1,0 +1,43 @@
+{
+  "description": "Personalization matrix. Each profile maps per-100g nutrition to red/yellow/green with explainable reasons. `red`/`yellow` are per-field thresholds; the worst field wins the overall flag.",
+  "profiles": {
+    "general": {
+      "label": "General adult",
+      "fields": {
+        "sugars_100g": {"yellow": 9.0, "red": 22.5, "unit": "g sugars"},
+        "saturated_fat_100g": {"yellow": 1.5, "red": 5.0, "unit": "g saturated fat"},
+        "salt_100g": {"yellow": 0.3, "red": 1.5, "unit": "g salt"}
+      }
+    },
+    "diabetic": {
+      "label": "Type-2 diabetes (sugar-sensitive)",
+      "fields": {
+        "sugars_100g": {"yellow": 5.0, "red": 15.0, "unit": "g sugars"},
+        "carbohydrates_100g": {"yellow": 30.0, "red": 60.0, "unit": "g carbohydrate"},
+        "fiber_100g": {"yellow_below": 3.0, "green_at_or_above": 6.0, "unit": "g fibre"}
+      }
+    },
+    "hypertension": {
+      "label": "High blood pressure (salt-sensitive)",
+      "fields": {
+        "salt_100g": {"yellow": 0.3, "red": 1.5, "unit": "g salt"},
+        "sodium_100g": {"yellow": 0.12, "red": 0.6, "unit": "g sodium"}
+      }
+    },
+    "heart": {
+      "label": "Cardiovascular risk (saturated-fat sensitive)",
+      "fields": {
+        "saturated_fat_100g": {"yellow": 1.5, "red": 5.0, "unit": "g saturated fat"},
+        "salt_100g": {"yellow": 0.3, "red": 1.5, "unit": "g salt"}
+      }
+    },
+    "weight_mgmt": {
+      "label": "Weight management (energy-dense sensitive)",
+      "fields": {
+        "energy_kcal_100g": {"yellow": 250.0, "red": 400.0, "unit": "kcal"},
+        "sugars_100g": {"yellow": 9.0, "red": 22.5, "unit": "g sugars"},
+        "saturated_fat_100g": {"yellow": 3.0, "red": 5.0, "unit": "g saturated fat"}
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+# OPIE validation rules — configurable thresholds + built-in consistency checks.
+# Threshold rules compare a per-100g nutrition field to a value. Built-in rules
+# (referenced by name under `builtins`) implement cross-field checks in code.
+
+# Per-100g threshold rules. `op` is one of gt, ge, lt, le.
+thresholds:
+  - id: sugars_high
+    field: sugars_100g
+    op: gt
+    value: 22.5        # UK FoP "red" threshold for sugars
+    severity: high
+    message: "Sugars exceed the high-sugar threshold (22.5g/100g)."
+  - id: saturated_fat_high
+    field: saturated_fat_100g
+    op: gt
+    value: 5.0         # UK FoP "red" threshold for saturated fat
+    severity: high
+    message: "Saturated fat exceeds the high threshold (5g/100g)."
+  - id: salt_high
+    field: salt_100g
+    op: gt
+    value: 1.5         # UK FoP "red" threshold for salt
+    severity: high
+    message: "Salt exceeds the high threshold (1.5g/100g)."
+  - id: energy_implausible
+    field: energy_kcal_100g
+    op: gt
+    value: 900         # >900 kcal/100g is physically implausible for food
+    severity: medium
+    message: "Energy per 100g is implausibly high (>900 kcal)."
+
+# Built-in cross-field consistency checks (implemented in engine.py).
+builtins:
+  - id: energy_macro_balance   # 4*carb + 4*protein + 9*fat ~= energy_kcal
+    enabled: true
+    tolerance: 0.30            # allow 30% slack (fibre, polyols, rounding)
+    severity: medium
+  - id: salt_sodium_consistency  # salt ~= sodium * 2.5
+    enabled: true
+    tolerance: 0.20
+    severity: medium
+  - id: sugars_le_carbs        # sugars cannot exceed carbohydrates
+    enabled: true
+    severity: high
+  - id: saturated_le_fat       # saturated fat cannot exceed total fat
+    enabled: true
+    severity: high
+  - id: percent_bounds         # any per-100g gram field must be <= 100
+    enabled: true
+    severity: high

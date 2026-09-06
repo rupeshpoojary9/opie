@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.env
+# Data + run artifacts (large / reproducible)
+data/off_subset/
+data/images/
+*.sqlite
+*.db
+results/
+.DS_Store

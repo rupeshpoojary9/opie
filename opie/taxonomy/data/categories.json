@@ -1,0 +1,36 @@
+{
+  "description": "Coarse ingredient taxonomy classes (keyword -> class) plus NOVA-style ultra-processing markers.",
+  "categories": {
+    "cereal": ["wheat", "flour", "rice", "oat", "barley", "maize", "corn", "semolina", "rye", "starch"],
+    "sweetener": ["sugar", "glucose", "fructose", "syrup", "honey", "dextrose", "maltose", "molasses", "aspartame", "sucralose", "acesulfame"],
+    "oil_fat": ["oil", "fat", "butter", "ghee", "margarine", "shortening"],
+    "dairy": ["milk", "whey", "cheese", "cream", "yogurt", "casein", "lactose"],
+    "protein": ["protein", "egg", "meat", "chicken", "beef", "pork", "soy protein", "gelatin"],
+    "fruit_veg": ["fruit", "apple", "orange", "tomato", "potato", "onion", "carrot", "vegetable", "berry"],
+    "additive": ["acid", "gum", "lecithin", "emulsifier", "stabiliser", "stabilizer", "colour", "color", "preservative", "flavour", "flavor", "extract", "regulator"],
+    "salt": ["salt", "sodium chloride"],
+    "water": ["water", "aqua"],
+    "cocoa": ["cocoa", "chocolate", "cacao"]
+  },
+  "ultra_processing_markers": [
+    "high fructose corn syrup",
+    "glucose-fructose syrup",
+    "glucose syrup",
+    "invert sugar",
+    "hydrogenated",
+    "maltodextrin",
+    "modified starch",
+    "corn syrup",
+    "protein isolate",
+    "hydrolysed",
+    "hydrolyzed",
+    "emulsifier",
+    "flavour",
+    "flavor",
+    "flavouring",
+    "artificial",
+    "colour",
+    "sweetener",
+    "monosodium glutamate"
+  ]
+}

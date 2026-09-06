@@ -1,0 +1,19 @@
+{
+  "description": "EU FIC Annex II major allergens. Keys are allergen classes; values are substring markers matched against normalized ingredient names.",
+  "allergens": {
+    "gluten": ["wheat", "barley", "rye", "oats", "spelt", "kamut", "gluten", "malt", "semolina", "farro"],
+    "crustaceans": ["crab", "lobster", "prawn", "shrimp", "crustacean"],
+    "eggs": ["egg", "albumen", "ovalbumin"],
+    "fish": ["fish", "cod", "salmon", "tuna", "anchovy"],
+    "peanuts": ["peanut", "groundnut", "arachis"],
+    "soybeans": ["soy", "soya", "soybean", "lecithin (soy"],
+    "milk": ["milk", "lactose", "whey", "casein", "butter", "cream", "cheese"],
+    "nuts": ["almond", "hazelnut", "walnut", "cashew", "pecan", "pistachio", "macadamia", "brazil nut"],
+    "celery": ["celery", "celeriac"],
+    "mustard": ["mustard"],
+    "sesame": ["sesame", "tahini"],
+    "sulphites": ["sulphite", "sulfite", "e220", "e221", "e222", "e223", "e224", "e226", "e227", "e228"],
+    "lupin": ["lupin"],
+    "molluscs": ["mussel", "oyster", "squid", "snail", "clam", "mollusc"]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "description": "Representative food additive E-numbers. Maps normalized additive-name substrings to their E-number and function. Not exhaustive; extend freely.",
+  "additives": {
+    "curcumin": {"enumber": "E100", "function": "colour"},
+    "riboflavin": {"enumber": "E101", "function": "colour"},
+    "tartrazine": {"enumber": "E102", "function": "colour"},
+    "sunset yellow": {"enumber": "E110", "function": "colour"},
+    "carmine": {"enumber": "E120", "function": "colour"},
+    "caramel": {"enumber": "E150", "function": "colour"},
+    "curcumin colour": {"enumber": "E100", "function": "colour"},
+    "ascorbic acid": {"enumber": "E300", "function": "antioxidant"},
+    "tocopherol": {"enumber": "E306", "function": "antioxidant"},
+    "citric acid": {"enumber": "E330", "function": "acidity regulator"},
+    "sodium citrate": {"enumber": "E331", "function": "acidity regulator"},
+    "phosphoric acid": {"enumber": "E338", "function": "acidity regulator"},
+    "lecithin": {"enumber": "E322", "function": "emulsifier"},
+    "guar gum": {"enumber": "E412", "function": "thickener"},
+    "xanthan gum": {"enumber": "E415", "function": "thickener"},
+    "carrageenan": {"enumber": "E407", "function": "thickener"},
+    "pectin": {"enumber": "E440", "function": "gelling agent"},
+    "mono- and diglycerides": {"enumber": "E471", "function": "emulsifier"},
+    "monoglycerides": {"enumber": "E471", "function": "emulsifier"},
+    "sodium bicarbonate": {"enumber": "E500", "function": "raising agent"},
+    "monosodium glutamate": {"enumber": "E621", "function": "flavour enhancer"},
+    "aspartame": {"enumber": "E951", "function": "sweetener"},
+    "acesulfame": {"enumber": "E950", "function": "sweetener"},
+    "sucralose": {"enumber": "E955", "function": "sweetener"},
+    "sodium benzoate": {"enumber": "E211", "function": "preservative"},
+    "potassium sorbate": {"enumber": "E202", "function": "preservative"},
+    "sodium nitrite": {"enumber": "E250", "function": "preservative"}
+  }
+}
